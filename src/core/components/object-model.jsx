@@ -39,16 +39,16 @@ const contestualizza = (key, ctx) => {
     field = b
     ns = a
     vocab = ctx.get(ns) || ""
-  } 
- 
+  }
+
   return (
     <div>
       <a href={vocab + field}>
         {(ns ? ns + ":" : "" )+ field}
       </a>&nbsp;
       <span>{
-        vocabularyUri && 
-          <a 
+        vocabularyUri &&
+          <a
            href={vocabularyUri}
            title={ "This value is relative to the vocabulary " + vocabularyUri }>[vocabulary]</a>
           }
@@ -123,7 +123,7 @@ export default class ObjectModel extends Component {
     let deprecated = schema.get("deprecated")
     let externalDocsUrl = schema.getIn(["externalDocs", "url"])
     let externalDocsDescription = schema.getIn(["externalDocs", "description"])
-    let example = schema.get("example") ? schema.get("example").toJS() : {}
+    let example = schema.get("example") != undefined ? schema.get("example").toJS() : undefined
 
     const JumpToPath = getComponent("JumpToPath", true)
     const Markdown = getComponent("Markdown", true)
@@ -330,17 +330,24 @@ export default class ObjectModel extends Component {
         <span className="brace-close">{ braceClose }</span>
       </ModelCollapse>
       {
-        infoProperties.size ? infoProperties.entrySeq().map( ( [ key, v ] ) => <Property key={`${key}-${v}`} propKey={ key } propVal={ v } propClass={ propClass } />) : null
+        infoProperties.size
+          ? infoProperties.entrySeq().map( ( [ key, v ] ) => {
+            if (key !== "example") { // exapmle is rendered below
+              return <Property key={`${key}-${v}`} propKey={ key } propVal={ v } propClass={ propClass } />
+            }
+          })
+          : null
       }
       <hr/>
-      { 
-        example && 
-              <ModelCollapse title="Example in RDF:">
-                <div style={{backgroundColor: "lightyellow"}}>
-                  <pre>
-                  {this.state && this.state.rdfExample}
-                  </pre>
-                </div>
+      {
+        example &&
+              <ModelCollapse title="Example in JSON and RDF:" expanded={true}>
+                  <pre>{JSON.stringify(example, null, 2)}</pre>
+                  <div style={{backgroundColor: "lightyellow"}}>
+                    <pre>
+                    {this.state && this.state.rdfExample || "Close and reopen the model to render the example."}
+                    </pre>
+                  </div>
               </ModelCollapse>
       }
       <hr/>
