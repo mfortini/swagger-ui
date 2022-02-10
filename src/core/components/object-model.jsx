@@ -72,7 +72,7 @@ export class OntologyClassModel extends Component {
     /// FIXME: set CORS on sparql endpoint and get rid of alloworigins.win.
     const endpoint = "https://api.allorigins.win/get?url=" + encodeURIComponent(jsonpUri)
 
-    fetch(endpoint)
+    fetch(endpoint, {cache: "force-cache"})
       .then((response) => {
         console.log("response", response)
         if (!response.ok) {
@@ -118,7 +118,7 @@ export class OntologyClassModel extends Component {
         &nbsp;
         {
           this.state && this.state.data &&
-          <ModelCollapse title="Show details">
+          <ModelCollapse title="Show details" expanded={true}>
             {
               this.state.data.map(([i, ontoProperty]) => {
                 return (<span>
@@ -187,7 +187,7 @@ export class PropertyModel extends Component {
     /// FIXME: set CORS on sparql endpoint and get rid of alloworigins.win.
     const endpoint = "https://api.allorigins.win/get?url=" + encodeURIComponent(jsonpUri)
 
-    fetch(endpoint)
+    fetch(endpoint, {cache: "force-cache"})
       .then((response) => {
         console.log("response", response)
         if (!response.ok) {
@@ -228,21 +228,20 @@ export class PropertyModel extends Component {
     }
     return (
       <div className="opblock opblock-get opblock-description-wrapper">
+        {
+          this.state && this.state.data && <a href={this.state.data.domain}
+              target={"_blank"} rel={"noreferrer"} title={ name + " is a property of " + this.state.data.domain}
+            >{basename(this.state.data.domain)}</a> || <span>No semantics</span>
+        }
+        :
         <a href={url} title={"This is the property " + url} target={"_blank"} rel={"noreferrer"}>
           {(ns ? ns + ":" : "") + name}
           </a>
         &nbsp;
         {
-          this.state && this.state.data &&
-          <ModelCollapse isOpened={true} title={""}>
-
-            <br />is a:<a href={this.state.data.class}
+          this.state && this.state.data && <a href={this.state.data.class} title={"The value of " + name + " is a " + this.state.data.class} 
               target={"_blank"} rel={"noreferrer"}
-            > {basename(this.state.data.class)}</a>
-            <br />class:<a href={this.state.data.domain}
-              target={"_blank"} rel={"noreferrer"}
-            >{basename(this.state.data.domain)}</a>
-          </ModelCollapse>
+            >[{basename(this.state.data.class)}]</a>
         }
       </div>
     )
@@ -272,7 +271,7 @@ export class DictModel extends Component {
     /// FIXME: set CORS on sparql endpoint and get rid of alloworigins.win.
     const endpoint = "https://api.allorigins.win/get?url=" + encodeURIComponent(jsonpUri)
 
-    fetch(endpoint)
+    fetch(endpoint, {cache: "force-cache"})
       .then((response) => {
         console.log("response", response)
         if (!response.ok) {
@@ -578,7 +577,6 @@ export default class ObjectModel extends Component {
                       if(key.slice(0,2) !== "x-") {
                         return
                       }
-
                       const normalizedValue = !value ? null : value.toJS ? value.toJS() : value
 
                       return (<tr key={key} className="extension">
