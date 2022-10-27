@@ -8,6 +8,7 @@ import jsonld from "jsonld"
 const braceOpen = "{"
 const braceClose = "}"
 const propClass = "property"
+const url = "https://www.robertopolli.it/sparc0rs/"
 
 const basename = (path) => {
   try{
@@ -67,11 +68,7 @@ export class OntologyClassModel extends Component {
 
       }
       `
-    const url = "https://virtuoso-dev-external-service-ndc-dev.apps.cloudpub.testedev.istat.it/sparql";
-    const jsonpUri = url + "?format=json&query=" + encodeURIComponent(query)
-    /// FIXME: set CORS on sparql endpoint and get rid of alloworigins.win.
-    const endpoint = "https://api.allorigins.win/get?url=" + encodeURIComponent(jsonpUri)
-
+    const endpoint = url + "?format=json&query=" + encodeURIComponent(query)
     fetch(endpoint, {cache: "force-cache"})
       .then((response) => {
         console.log("response", response)
@@ -82,16 +79,15 @@ export class OntologyClassModel extends Component {
       })
       .then((data) => {
         console.log("fetched data", data)
-        data = JSON.parse(data.contents) /// FIXME: remove this line after removing alloworigins.win
         const triple = data.results.bindings
         const content = Object.entries(triple).map(
             ([k, v], i) => [k, {property: v.property.value, range: v.range ? v.range.value: null}])
-        
+
         console.log("rdf:type data", content)
         this.setState({ data: content })
       })
       .catch((e) => {
-        console.log("error fetching data from %s", endpoint, e)
+        console.error("error fetching data from %s", endpoint, e)
         this.setState({ data: null })
       })
   }
@@ -182,11 +178,7 @@ export class PropertyModel extends Component {
         .
       }
       `
-    const url = "https://virtuoso-dev-external-service-ndc-dev.apps.cloudpub.testedev.istat.it/sparql";
-    const jsonpUri = url + "?format=json&query=" + encodeURIComponent(query)
-    /// FIXME: set CORS on sparql endpoint and get rid of alloworigins.win.
-    const endpoint = "https://api.allorigins.win/get?url=" + encodeURIComponent(jsonpUri)
-
+    const endpoint = url + "?format=json&query=" + encodeURIComponent(query)
     fetch(endpoint, {cache: "force-cache"})
       .then((response) => {
         console.log("response", response)
@@ -197,7 +189,6 @@ export class PropertyModel extends Component {
       })
       .then((data) => {
         console.log("fetched data", data)
-        data = JSON.parse(data.contents) /// FIXME: remove this line after removing alloworigins.win
         const triple = data.results.bindings[0]
         const content = Object.fromEntries(
           Object.entries(triple).map(
@@ -207,7 +198,7 @@ export class PropertyModel extends Component {
         this.setState({ data: content })
       })
       .catch((e) => {
-        console.log("error fetching data from %s", endpoint, e)
+        console.error("error fetching data from %s", endpoint, e)
         this.setState({ data: null })
       })
   }
@@ -239,7 +230,7 @@ export class PropertyModel extends Component {
           </a>
         &nbsp;
         {
-          this.state && this.state.data && <a href={this.state.data.class} title={"The value of " + name + " is a " + this.state.data.class} 
+          this.state && this.state.data && <a href={this.state.data.class} title={"The value of " + name + " is a " + this.state.data.class}
               target={"_blank"} rel={"noreferrer"}
             >[{basename(this.state.data.class)}]</a>
         }
@@ -266,11 +257,8 @@ export class DictModel extends Component {
         ?class _:b1 <${this.props.url}>
       }
       `
-    const url = "https://virtuoso-dev-external-service-ndc-dev.apps.cloudpub.testedev.istat.it/sparql";
-    const jsonpUri = url + "?format=json&query=" + encodeURIComponent(query)
-    /// FIXME: set CORS on sparql endpoint and get rid of alloworigins.win.
-    const endpoint = "https://api.allorigins.win/get?url=" + encodeURIComponent(jsonpUri)
 
+    const endpoint = url + "?format=json&query=" + encodeURIComponent(query)
     fetch(endpoint, {cache: "force-cache"})
       .then((response) => {
         console.log("response", response)
@@ -281,7 +269,6 @@ export class DictModel extends Component {
       })
       .then((data) => {
         console.log("fetched data", data)
-        data = JSON.parse(data.contents) /// FIXME: remove this line after removing alloworigins.win
         const triple = data.results.bindings[0]
         const content = Object.fromEntries(
           Object.entries(triple).map(
@@ -291,7 +278,7 @@ export class DictModel extends Component {
         this.setState({ data: content })
       })
       .catch((e) => {
-        console.log("error fetching data from %s", endpoint, e)
+        console.error("error fetching data from %s", endpoint, e)
         this.setState({ data: null })
       })
   }
@@ -341,11 +328,11 @@ class OntoScore extends Component {
 
   render() {
     let { semanticScore } = this.props
-    return <span 
+    return <span
       style={{float: "right"}}
       className={ "opblock " + (
          semanticScore.ratio > 0.9 ? "opblock-post"
-        : semanticScore.ratio > 0.5 ? "opblock-get" 
+        : semanticScore.ratio > 0.5 ? "opblock-get"
         : "opblock-delete") } >&nbsp;{"OntoScore: " + semanticScore.ratio}</span>
   }
 }
@@ -685,7 +672,7 @@ export default class ObjectModel extends Component {
       <ModelCollapse title="JSON-LD Context">
         <pre>{ jsonldContext ? JSON.stringify(jsonldContext, null, 2) : "{}"}</pre>
       </ModelCollapse>
-      
+
       <OntologyClassModel url={jsonldType} getComponent={getComponent} />
 
     </ModelCollapse>
