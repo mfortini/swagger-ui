@@ -15,24 +15,6 @@
   <div id="swagger-ui"></div>
 
   <script src="dev-helper-initializer.js"></script>
-  <script>
-    window.onload = function() {
-      window["SwaggerUIBundle"] = window["swagger-ui-bundle"]
-      window["SwaggerUIStandalonePreset"] = window["swagger-ui-standalone-preset"]
-      // Build a system
-      const ui = SwaggerUIBundle({
-        url: "person.oas3.yaml",
-        dom_id: '#swagger-ui',
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ],
-        plugins: [
-          SwaggerUIBundle.plugins.DownloadUrl
-        ],
-        layout: "StandaloneLayout"
-      })
-  </script>
 </body>
 
 </html>

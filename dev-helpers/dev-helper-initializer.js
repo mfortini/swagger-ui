@@ -1,21 +1,20 @@
 /* eslint-disable no-undef */
-window.onload = function() {
-  window["SwaggerUIBundle"] = window["swagger-ui-bundle"]
-  window["SwaggerUIStandalonePreset"] = window["swagger-ui-standalone-preset"]
-  // Build a system
-  const ui = SwaggerUIBundle({
-    url: "https://petstore.swagger.io/v2/swagger.json",
-    dom_id: "#swagger-ui",
-    presets: [
-      SwaggerUIBundle.presets.apis,
-      SwaggerUIStandalonePreset
-    ],
-    plugins: [
-      SwaggerUIBundle.plugins.DownloadUrl
-    ],
-    // requestSnippetsEnabled: true,
-    layout: "StandaloneLayout"
-  })
+    window.onload = function() {
+      window["SwaggerUIBundle"] = window["swagger-ui-bundle"]
+      window["SwaggerUIStandalonePreset"] = window["swagger-ui-standalone-preset"]
+      // Build a system
+      const ui = SwaggerUIBundle({
+        url: "person.oas3.yaml",
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+      })
 
   window.ui = ui
 
